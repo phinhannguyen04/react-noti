@@ -8,8 +8,6 @@ export default function SlotDetailModal({isOpen, onOpenChange,variant = "transpa
         return null
     }
 
-    const variantLabel = variant.charAt(0).toUpperCase() + variant.slice(1)
-
     return (
         <Modal>
             <Modal.Backdrop 

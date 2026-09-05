@@ -1,5 +1,5 @@
 import { Button, Modal } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const INITIAL_FORM = {
     timeRange: "",
@@ -17,12 +17,6 @@ export default function AppointmentFormModal({
 }) {
     const [form, setForm] = useState(INITIAL_FORM);
 
-    useEffect(() => {
-        if (!isOpen) {
-            setForm(INITIAL_FORM);
-        }
-    }, [isOpen]);
-
     const handleChange = (event) => {
         const { name, value } = event.target;
 
@@ -32,12 +26,20 @@ export default function AppointmentFormModal({
         }));
     };
 
+    const handleClose = () => {
+        setForm(INITIAL_FORM);
+        onOpenChange(false)
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
         onSubmit({
             ...form,
         });
+
+        setForm(INITIAL_FORM)
+        onOpenChange(false)
     };
 
     return (
@@ -49,7 +51,7 @@ export default function AppointmentFormModal({
             >
                 <Modal.Container>
                     <Modal.Dialog className="sm:max-w-[460px]">
-                        <Modal.CloseTrigger />
+                        <Modal.CloseTrigger onPress={handleClose}/>
 
                         <Modal.Header>
                             <Modal.Heading>
@@ -176,9 +178,7 @@ export default function AppointmentFormModal({
                                 <Button
                                     type="button"
                                     variant="secondary"
-                                    onPress={() =>
-                                        onOpenChange(false)
-                                    }
+                                    onPress={handleClose}
                                 >
                                     Cancel
                                 </Button>

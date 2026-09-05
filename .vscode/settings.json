@@ -1,0 +1,7 @@
+{
+    "github.copilot.chat.commitMessageGeneration.instructions": [
+        {
+            "text": "Always generate commit messages using Conventional Commits format: <type>(<scope>): <description>. Allowed types: feat, fix, refactor, docs, test, chore, perf, build, ci, style. Use lowercase type and scope. Keep the description concise, imperative, and do not end with a period. Choose the type based on the actual staged changes."
+        }
+    ]
+}

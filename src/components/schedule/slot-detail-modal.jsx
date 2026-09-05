@@ -1,15 +1,14 @@
 import {
     Button,
-    Card,
     Modal,
 } from "@heroui/react";
 
 export default function SlotDetailModal({isOpen, onOpenChange,variant = "transparent", slot}) {
     if (!slot) {
-        return null;
+        return null
     }
 
-    const variantLabel = variant.charAt(0).toUpperCase() + variant.slice(1);
+    const variantLabel = variant.charAt(0).toUpperCase() + variant.slice(1)
 
     return (
         <Modal>

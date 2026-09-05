@@ -1,5 +1,6 @@
 import {
     Button,
+    Card,
     Modal,
 } from "@heroui/react";
 
@@ -22,13 +23,7 @@ export default function SlotDetailModal({isOpen, onOpenChange,variant = "transpa
                         <Modal.CloseTrigger />
 
                         <Modal.Header>
-                            <Modal.Icon className="bg-default text-foreground">
-                                {slot.slotNo}
-                            </Modal.Icon>
 
-                            <Modal.Heading>
-                                Slot {slot.slotNo}
-                            </Modal.Heading>
                         </Modal.Header>
 
                         <Modal.Body>
@@ -63,9 +58,6 @@ export default function SlotDetailModal({isOpen, onOpenChange,variant = "transpa
                                     {slot.email}
                                 </p>
 
-                                <p>
-                                    Backdrop: {variantLabel}
-                                </p>
                             </div>
                         </Modal.Body>
 

@@ -27,9 +27,6 @@ export default function App() {
     const [gradient] = useState(() => randomGradient());
     const [selectedSlot, setSelectedSlot] = useState(null);
     const [isOpen, setIsOpen] = useState(false)
-    const variantLabel =
-        variant.charAt(0).toUpperCase() +
-        variant.slice(1);
 
     const handleSelectSlot = (slot) => {
         setSelectedSlot(slot);
@@ -38,37 +35,37 @@ export default function App() {
 
     return (
         <div className="flex flex-col items-center gap-6">
-        <div className="flex items-end justify-between gap-5 p-4">
-            <WeekSelector
-                weeks={weeks}
-                onWeeksChange={setWeeks}
+            <div className="flex items-end justify-between gap-5 p-4">
+                <WeekSelector
+                    weeks={weeks}
+                    onWeeksChange={setWeeks}
+                />
+
+                <Button
+                    variant="secondary" 
+                    onPress={() => {
+                        selectedSlot(slots[0])
+                        setIsOpen(prev => !prev)
+                    }}
+                >
+                    Add new
+                </Button>
+            </div>
+
+            <ScheduleCalendar weeks={weeks} />
+
+            <SlotList
+                slots={slots}
+                gradient={gradient}
+                onSelectSlot={handleSelectSlot}
             />
 
-            <Button
-                variant="secondary" 
-                onPress={() => {
-                    selectedSlot(slots[0])
-                    setIsOpen(prev => !prev)
-                }}
-            >
-                {variantLabel}
-            </Button>
-        </div>
-
-        <ScheduleCalendar weeks={weeks} />
-
-        <SlotList
-            slots={slots}
-            gradient={gradient}
-            onSelectSlot={handleSelectSlot}
-        />
-
-        <SlotDetailModal
-            isOpen={isOpen}
-            onOpenChange={setIsOpen}
-            slot={selectedSlot}
-            variant={variant}
-        />
+            <SlotDetailModal
+                isOpen={isOpen}
+                onOpenChange={setIsOpen}
+                slot={selectedSlot}
+                variant={variant}
+            />
         </div>
     );
 }

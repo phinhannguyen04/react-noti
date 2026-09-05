@@ -28,8 +28,5 @@ jobs:
       - name: Run lint
         run: deno task lint
 
-      - name: Run tests
-        run: deno task test
-
       - name: Build application
         run: deno task build

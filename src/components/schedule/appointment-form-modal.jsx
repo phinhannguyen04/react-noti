@@ -2,7 +2,8 @@ import { Button, Modal } from "@heroui/react";
 import { useState } from "react";
 
 const INITIAL_FORM = {
-    timeRange: "",
+    startTime: "",
+    endTime: "",
     status: "Scheduled",
     security: "",
     email: "",
@@ -14,6 +15,7 @@ export default function AppointmentFormModal({
     onOpenChange,
     selectedDate,
     onSubmit,
+    isSubmitting,
 }) {
     const [form, setForm] = useState(INITIAL_FORM);
 
@@ -31,15 +33,24 @@ export default function AppointmentFormModal({
         onOpenChange(false)
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (
+        event,
+        ) => {
         event.preventDefault();
 
-        onSubmit({
+        try {
+            await onSubmit({
             ...form,
-        });
+            });
 
-        setForm(INITIAL_FORM)
-        onOpenChange(false)
+            setForm(INITIAL_FORM);
+            onOpenChange(false);
+        } catch (error) {
+            console.error(
+            "Create appointment failed",
+            error,
+            );
+        }
     };
 
     return (
@@ -77,19 +88,35 @@ export default function AppointmentFormModal({
                                     </div>
 
                                     {/* Time */}
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium">
-                                            Time
-                                        </label>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label className="mb-1 block text-sm font-medium">
+                                                Start time
+                                            </label>
 
-                                        <input
-                                            className="w-full rounded-lg border border-default-300 px-3 py-2 outline-none"
-                                            name="timeRange"
-                                            value={form.timeRange}
-                                            onChange={handleChange}
-                                            placeholder="e.g. 9am - 10am"
-                                            required
-                                        />
+                                            <input
+                                                type="time"
+                                                className="w-full rounded-lg border border-default-300 px-3 py-2 outline-none"
+                                                name="startTime"
+                                                value={form.startTime}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="mb-1 block text-sm font-medium">
+                                                End time
+                                            </label>
+
+                                            <input
+                                                type="time"
+                                                className="w-full rounded-lg border border-default-300 px-3 py-2 outline-none"
+                                                name="endTime"
+                                                value={form.endTime}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
                                     </div>
 
                                     {/* Name */}
@@ -183,8 +210,11 @@ export default function AppointmentFormModal({
                                     Cancel
                                 </Button>
 
-                                <Button type="submit">
-                                    Save appointment
+                                <Button 
+                                    type="submit"
+                                    isDisabled={isSubmitting}    
+                                >
+                                    {isSubmitting ? "Saving..." : "Save appointment"}
                                 </Button>
                             </Modal.Footer>
                         </form>

@@ -1,42 +1,60 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { appointmentKeys } from "../queries/appointments.queries";
-import { createAppointment, deleteAppointment, updateAppointment } from "../api/appointments.api";
+import {
+    useMutation,
+    useQueryClient,
+} from "@tanstack/react-query";
+
+import {
+    createAppointment,
+    updateAppointment,
+    deleteAppointment,
+} from "../api/appointments.api";
+
+import {
+    appointmentKeys,
+} from "../queries/appointments.queries";
+
 
 export function useCreateAppointment() {
-    const queryClient = useQueryClient()
-    
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: createAppointment,
-        onSuccess: () => {
-            queryClient.invalidateQueries({
+
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
                 queryKey: appointmentKeys.all,
-            })
+            });
         },
-    })
+    });
 }
+
 
 export function useUpdateAppointment() {
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({id, data}) => updateAppointment(id, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: appointmentKeys.all
-            })
-        }
-    })
+        mutationFn: ({ id, data }) =>
+            updateAppointment(id, data),
+
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+                queryKey: appointmentKeys.all,
+            });
+        },
+    });
 }
 
+
 export function useDeleteAppointment() {
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: deleteAppointment,
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: appointmentKeys.all
-            })
-        }
-    })
+
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+                queryKey: appointmentKeys.all,
+            });
+        },
+    });
 }

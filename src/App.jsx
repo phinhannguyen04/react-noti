@@ -7,8 +7,10 @@ import ScheduleCalendar from "./components/schedule/schedule-calendar";
 import SlotList from "./components/schedule/slot-list";
 import SlotDetailModal from "./components/schedule/slot-detail-modal";
 
-import { slots as initialSlots } from "./data/schedule-data";
 import AppointmentFormModal from "./components/schedule/appointment-form-modal";
+import { useAppointments } from "./queries/appointments.queries";
+import { useCreateAppointment } from "./mutations/appointments.mutations";
+import { appointmentToSlot } from "./api/appointment.mapper";
 
 function randomGradient() {
     const hue1 = Math.floor(Math.random() * 360);
@@ -47,16 +49,23 @@ export default function App() {
     const [variant] = useState("transparent");
     const [gradient] = useState(() => randomGradient());
     
-    const [scheduleSlots, setScheduleSlots] = useState(initialSlots)
     const [selectedDate, setSelectedDate] = useState(() => today(getLocalTimeZone()))
+    const selectedDateLabel = formatCalendarDate(selectedDate)
+    const selectedDateKey = getDateKey(selectedDate);
+    const {
+        data: appointment = [], 
+        isLoading,
+        isError,
+        error,
+    } = useAppointments(selectedDateKey)
+    
+    const slots = appointment.map(appointmentToSlot)
+    const createAppointment = useCreateAppointment()
 
     const [selectedSlot, setSelectedSlot] = useState(null);
     const [isOpen, setIsOpen] = useState(false)
     const [isAppointmentOpen, setIsAppointmentOpen] = useState(false)
-    
-    const selectedDateKey = getDateKey(selectedDate)
-    const selectedDateLabel = formatCalendarDate(selectedDate)
-    const filteredSlots = scheduleSlots.filter(slot => slot.date === selectedDateLabel)
+
     
     const handleSelectSlot = (slot) => {
         setSelectedSlot(slot);
@@ -71,24 +80,34 @@ export default function App() {
         setIsAppointmentOpen(true)
     }
 
-    const handleCreateAppointment = (appointment) => {
-        setScheduleSlots((currentSlots) => {
-            const nextSlotNo = currentSlots.reduce(
-                (max, slot) => Math.max(max, Number(slot.slotNo) || 0), 0
-            ) + 1
+    const handleCreateAppointment =
+        async (appointment) => {
+            await createAppointment.mutateAsync({
+            title:
+                appointment.security,
 
-            return [
-                ...currentSlots,
-                {
-                    ...appointment,
-                    slotNo: String(nextSlotNo),
-                    dateKey: selectedDateKey,
-                    date: selectedDateLabel,
-                },
-            ];
-        })
-        setIsAppointmentOpen(false)
-    }
+            date:
+                selectedDateKey,
+
+            startTime:
+                appointment.startTime,
+
+            endTime:
+                appointment.endTime || null,
+
+            assignee:
+                appointment.security,
+
+            location:
+                appointment.department,
+
+            description:
+                appointment.email,
+
+            status:
+                appointment.status,
+            });
+    };
 
     
     return (
@@ -118,18 +137,36 @@ export default function App() {
                 onChange={setSelectedDate}
             />
 
-            <SlotList
-                slots={filteredSlots}
-                gradient={gradient}
-                onSelectSlot={handleSelectSlot}
+            {isLoading && (
+                <p className="text-sm text-default-500">
+                    Loading appointments...
+                </p>
+            )}
 
-            />
+            {isError && (
+                <p className="text-sm text-danger">
+                    {error?.message ??
+                    "Failed to load appointments"}
+                </p>
+            )}
+
+            {!isLoading &&
+                !isError && (
+                    <SlotList
+                        slots={slots}
+                        gradient={gradient}
+                        onSelectSlot={
+                            handleSelectSlot
+                        }
+                    />
+            )}
 
             <AppointmentFormModal 
                 isOpen={isAppointmentOpen}
                 onOpenChange={setIsAppointmentOpen}
                 selectedDate={selectedDateLabel}
                 onSubmit={handleCreateAppointment}
+                isSubmitting={createAppointment.isPending}
             />
 
             <SlotDetailModal

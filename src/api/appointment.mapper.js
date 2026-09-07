@@ -1,69 +1,86 @@
-export function appointmentToSlot(
-  appointment,
-) {
-  return {
-    id:
-      appointment.id,
+export function appointmentToSlot(appointment) {
+    return {
+        id: appointment.id,
 
-    slotNo:
-      appointment.id,
+        slotNo: appointment.id,
 
-    dateKey:
-      appointment.date,
+        dateKey: appointment.date,
 
-    date:
-      formatDate(
-        appointment.date,
-      ),
+        date: formatDate(
+            appointment.date,
+        ),
 
-    timeRange:
-      formatTimeRange(
-        appointment.startTime,
-        appointment.endTime,
-      ),
+        startTime:
+            appointment.startTime ?? "",
 
-    status:
-      appointment.status,
+        endTime:
+            appointment.endTime ?? "",
 
-    security:
-      appointment.assignee ??
-      appointment.title,
+        timeRange:
+            formatTimeRange(
+                appointment.startTime,
+                appointment.endTime,
+            ),
 
-    email:
-      appointment.description ??
-      "",
+        status:
+            appointment.status ?? "",
 
-    department:
-      appointment.location ??
-      "",
-  };
+        security:
+            appointment.assignee ??
+            appointment.title ??
+            "",
+
+        email:
+            appointment.description ??
+            "",
+
+        department:
+            appointment.location ??
+            "",
+    };
 }
+
 
 function formatDate(date) {
-  if (!date) {
-    return "";
-  }
+    if (!date) {
+        return "";
+    }
 
-  const [
-    year,
-    month,
-    day,
-  ] = date.split("-");
+    const [
+        year,
+        month,
+        day,
+    ] = date.split("-");
 
-  return `${Number(month)}/${Number(day)}/${year}`;
+    return `${Number(month)}/${Number(day)}/${year}`;
 }
 
+
 function formatTimeRange(
-  startTime,
-  endTime,
+    startTime,
+    endTime,
 ) {
-  if (!startTime) {
-    return "";
-  }
+    if (!startTime) {
+        return "";
+    }
 
-  if (!endTime) {
-    return startTime;
-  }
+    const formattedStart =
+        normalizeTime(startTime);
 
-  return `${startTime} - ${endTime}`;
+    if (!endTime) {
+        return formattedStart;
+    }
+
+    const formattedEnd =
+        normalizeTime(endTime);
+
+    return `${formattedStart} - ${formattedEnd}`;
+}
+
+
+function normalizeTime(time) {
+    if (!time) {
+        return "";
+    }
+    return time.slice(0, 5);
 }

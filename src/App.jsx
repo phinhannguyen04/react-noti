@@ -187,101 +187,43 @@ export default function App() {
         };
 
 
-    const handleCreateAppointment =
-        async (appointment) => {
-            try {
-                await createAppointment.mutateAsync({
-                    title:
-                        appointment.security,
-
-                    date:
-                        selectedDateKey,
-
-                    startTime:
-                        appointment.startTime,
-
-                    endTime:
-                        appointment.endTime ||
-                        null,
-
-                    assignee:
-                        appointment.security,
-
-                    location:
-                        appointment.department,
-
-                    description:
-                        appointment.email,
-
-                    status:
-                        appointment.status,
-                });
-
-            } catch (error) {
-
-                throw error;
-            }
-        };
+    const handleCreateAppointment = async (appointment) => {
+        await createAppointment.mutateAsync({
+            title: appointment.security,
+            date: selectedDateKey,
+            startTime: appointment.startTime,
+            endTime: appointment.endTime || null,
+            assignee: appointment.security,
+            location: appointment.department,
+            description: appointment.email,
+            status: appointment.status,
+        });
+    };
 
 
-    const handleUpdateAppointment =
-        async (
+    const handleUpdateAppointment = async (id, appointment) => {
+        await updateAppointment.mutateAsync({
             id,
-            appointment,
-        ) => {
-            try {
-                await updateAppointment.mutateAsync({
-                    id,
 
-                    data: {
-                        title:
-                            appointment.security,
-
-                        startTime:
-                            appointment.startTime,
-
-                        endTime:
-                            appointment.endTime ||
-                            null,
-
-                        assignee:
-                            appointment.security,
-
-                        location:
-                            appointment.department,
-
-                        description:
-                            appointment.email,
-
-                        status:
-                            appointment.status,
-                    },
-                });
-
-            } catch (error) {
-
-                throw error;
-            }
-        };
+            data: {
+                title: appointment.security,
+                startTime: appointment.startTime,
+                endTime: appointment.endTime || null,
+                assignee: appointment.security,
+                location: appointment.department,
+                description: appointment.email,
+                status: appointment.status,
+            },
+        });
+    };
 
 
-    const handleDeleteAppointment =
-        async (id) => {
-            try {
-                await deleteAppointment.mutateAsync(
-                    id,
-                );
+    const handleDeleteAppointment = async (id) => {
+        await deleteAppointment.mutateAsync(id);
 
-                setSelectedSlotId(
-                    null,
-                );
-
-                setIsOpen(false);
-            } catch (error) {
-
-                throw error;
-            }
-        };
+        setSelectedSlotId(null);
+        setIsOpen(false);
+    };
 
 
     return (

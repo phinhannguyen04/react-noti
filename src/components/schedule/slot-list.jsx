@@ -18,16 +18,16 @@ export default function SlotList({
 
     return (
         <ListBox
-        className="w-80"
-        onAction={handleAction}
+            className="w-80"
+            onAction={handleAction}
         >
-        {slots.map((slot) => (
-            <SlotItem
-            key={slot.slotNo}
-            slot={slot}
-            gradient={gradient}
-            />
-        ))}
+            {slots.map((slot) => (
+                <SlotItem
+                key={slot.slotNo}
+                slot={slot}
+                gradient={gradient}
+                />
+            ))}
         </ListBox>
     );
 }
